@@ -2,6 +2,8 @@
 
 Cool Krist Dashboard made with [blessed.js](https://github.com/chjj/blessed) and [blessed-contrib](https://github.com/yaronn/blessed-contrib) among other things :)
 
+![KristConsole](https://i.imgur.com/X6XUDgb.png)
+
 To get started, just
 `git clone`, `npm install`, and `npm start` or `node Krist-Dashboard.js`
 
