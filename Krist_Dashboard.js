@@ -172,9 +172,11 @@ screen.on('resize', function() {
   //table.emit('attach');
   //lcdLineOne.emit('attach');
   //errorsLine.emit('attach');
+  tree.emit('attach');
   transactionsLine.emit('attach');
   globalStats.emit('attach');
   latestStats.emit('attach');
+  kristLogo.emit('attach');
   log.emit('attach');
 });
 
