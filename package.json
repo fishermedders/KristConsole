@@ -1,0 +1,33 @@
+{
+  "name": "kristconsole",
+  "version": "1.0.0",
+  "description": "A cool Krist Console for monitoring all things Krist",
+  "main": "Krist_Dashboard.js",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.21",
+    "websocket": "^1.0.33"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node Krist-Dashboard.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fishermedders/KristConsole.git"
+  },
+  "keywords": [
+    "Krist",
+    "Dashboard",
+    "KristDashboard",
+    "KristConsole"
+  ],
+  "author": "Fisher",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/fishermedders/KristConsole/issues"
+  },
+  "homepage": "https://github.com/fishermedders/KristConsole#readme"
+}
