@@ -1,2 +1,2 @@
 /blessed-contrib-krist
-node_modules/
+**/node_modules
