@@ -1,6 +1,9 @@
 var blessed = require('blessed')
   , contrib = require('blessed-contrib')
 
+var setTerminalTitle = require('set-terminal-title');
+setTerminalTitle('KRIST CONSOLE :D', { verbose: false });
+
 var WebSocketClient = require('websocket').client;
 const axios = require('axios')
 
@@ -248,12 +251,14 @@ client.on('connect', function(connection) {
                 if(data.event == "block") {
                     log.log("✔ #" + data.block.height + " Solved for " + data.block.address + " at " + data.block.value + " Krist.")
                 }
-                var meta = ""
-                if(data.transaction.metadata != "") {
-                  meta = " (" + data.transaction.metadata + ")";
-                }
                 if(data.event == "transaction") {
-                  log.log("✔ " + data.transaction.from + " ➜ " + data.transaction.value + "KST ➜ " + data.transaction.to + meta);
+                  if(data.transaction.type != "mined") {
+                    var meta = ""
+                    if(data.transaction.metadata != "" && data.transaction.metadata != null) {
+                      meta = " (" + data.transaction.metadata + ")";
+                    }
+                    log.log("✔ " + data.transaction.from + " ➜ " + data.transaction.value + "KST ➜ " + data.transaction.to + meta);
+                  }
                 }
             }
             //log.log(message.utf8Data)
