@@ -12,7 +12,7 @@ var screen = blessed.screen()
 
 var grid = new contrib.grid({rows: 12, cols: 12, screen: screen})
 
-var tree =  grid.set(0, 6, 6, 6, contrib.tree, 
+var tree =  grid.set(0, 8, 6, 4, contrib.tree, 
   { fg: 'green'
   , selectedFg: 'green'
   , label: 'Top [B]alances (R to reload)'
@@ -28,12 +28,20 @@ tree.on('select',function(node){
     //screen.render();
 });
 
-var transactionsLine = grid.set(0, 0, 6, 6, contrib.line, 
+var currentWorkLine = grid.set(0, 0, 6, 4, contrib.line, 
           { showNthLabel: 5
-          , maxY: 100
-          , label: 'Total Transactions'
-          , showLegend: true
+//          , maxY: 100
+          , label: 'Current Work'
+          , showLegend: false
           , legend: {width: 10}})
+
+currentWorkLine.set
+var twentyfourhWorkLine = grid.set(0, 4, 6, 4, contrib.line, 
+            { showNthLabel: 5
+//            , maxY: 100
+            , label: '24h Work'
+            , showLegend: false
+            , legend: {width: 10}})
 
 var globalStats = grid.set(6, 0, 3, 6, blessed.box, {label: 'Krist [G]lobal Stats', tags:true})
 var latestStats = grid.set(9, 0, 3, 4, blessed.box, {label: 'Krist [L]atest Stats', tags:true})
@@ -109,24 +117,57 @@ setInterval(function() {
 
 //set line charts dummy data
 
-var transactionsData = {
-   title: 'USA',
-   style: {line: 'red'},
-   x: ['00:00', '00:05', '00:10', '00:15', '00:20', '00:30', '00:40', '00:50', '01:00', '01:10', '01:20', '01:30', '01:40', '01:50', '02:00', '02:10', '02:20', '02:30', '02:40', '02:50', '03:00', '03:10', '03:20', '03:30', '03:40', '03:50', '04:00', '04:10', '04:20', '04:30'],
-   y: [0, 20, 40, 45, 45, 50, 55, 70, 65, 58, 50, 55, 60, 65, 70, 80, 70, 50, 40, 50, 60, 70, 82, 88, 89, 89, 89, 80, 72, 70]
-}
-
-var transactionsData1 = {
-   title: 'Europe',
+var currentWorkData = {
+   title: 'Current',
    style: {line: 'yellow'},
-   x: ['00:00', '00:05', '00:10', '00:15', '00:20', '00:30', '00:40', '00:50', '01:00', '01:10', '01:20', '01:30', '01:40', '01:50', '02:00', '02:10', '02:20', '02:30', '02:40', '02:50', '03:00', '03:10', '03:20', '03:30', '03:40', '03:50', '04:00', '04:10', '04:20', '04:30'],
-   y: [0, 5, 5, 10, 10, 15, 20, 30, 25, 30, 30, 20, 20, 30, 30, 20, 15, 15, 19, 25, 30, 25, 25, 20, 25, 30, 35, 35, 30, 30]
+   //x: ['00:00', '00:05', '00:10', '00:15', '00:20', '00:30', '00:40', '00:50', '01:00', '01:10', '01:20', '01:30', '01:40', '01:50', '02:00', '02:10', '02:20', '02:30', '02:40', '02:50', '03:00', '03:10', '03:20', '03:30', '03:40', '03:50', '04:00', '04:10', '04:20', '04:30'],
+   x: [],
+   //y: [0, 20, 40, 45, 45, 50, 55, 70, 65, 58, 50, 55, 60, 65, 70, 80, 70, 50, 40, 50, 60, 70, 82, 88, 89, 89, 89, 80, 72, 70]
+   y: []
 }
 
-setLineData([transactionsData, transactionsData1], transactionsLine)
+var twentyfourhData = {
+   title: '24h work',
+   style: {line: 'yellow'},
+   //x: ['00:00', '00:05', '00:10', '00:15', '00:20', '00:30', '00:40', '00:50', '01:00', '01:10', '01:20', '01:30', '01:40', '01:50', '02:00', '02:10', '02:20', '02:30', '02:40', '02:50', '03:00', '03:10', '03:20', '03:30', '03:40', '03:50', '04:00', '04:10', '04:20', '04:30'],
+   x: [],
+   //y: [0, 5, 5, 10, 10, 15, 20, 30, 25, 30, 30, 20, 20, 30, 30, 20, 15, 15, 19, 25, 30, 25, 25, 20, 25, 30, 35, 35, 30, 30]
+   y: []
+}
+
+for (var workint=30;workint > 0;workint--) {
+  currentWorkData.x.push('-' + workint + 'm');
+}
+
+for (var workint=24;workint > 0;workint--) {
+  twentyfourhData.x.push('-' + workint + 'h');
+}
+
+function fetch24Work() {
+  axios.get('https://krist.ceriat.net/work/day')
+  .then((twentyfourwork) => {
+      currentWorkData.y = twentyfourwork.data.work.slice(Math.max(twentyfourwork.data.work.length - 30, 0));
+      twentyfourhData.y = twentyfourwork.data.work.filter(function(value, index, Arr) {
+        return index % 61 == 0;
+      });
+      //console.log(newArr.length);
+      //console.log(" " + newArr.length);
+      currentWorkLine.setData(currentWorkData);
+      twentyfourhWorkLine.setData(twentyfourhData);
+  });  
+}
+fetch24Work();
+setInterval(function() {
+  fetch24Work();
+}, 60000)
+
+setLineData([currentWorkData], currentWorkLine)
+setLineData([twentyfourhData], twentyfourhWorkLine)
 
 setInterval(function() {
-   setLineData([transactionsData, transactionsData1], transactionsLine)
+   //setLineData([currentWorkData], currentWorkLine)
+   currentWorkLine.setData(currentWorkData);
+   twentyfourhWorkLine.setData(twentyfourhData);
    screen.render()
 }, 500)
 
@@ -173,7 +214,8 @@ screen.on('resize', function() {
   //lcdLineOne.emit('attach');
   //errorsLine.emit('attach');
   tree.emit('attach');
-  transactionsLine.emit('attach');
+  currentWorkLine.emit('attach');
+  twentyfourhWorkLine.emit('attach')
   globalStats.emit('attach');
   latestStats.emit('attach');
   kristLogo.emit('attach');
@@ -206,11 +248,19 @@ client.on('connect', function(connection) {
                 if(data.event == "block") {
                     log.log("✔ #" + data.block.height + " Solved for " + data.block.address + " at " + data.block.value + " Krist.")
                 }
+                var meta = ""
+                if(data.transaction.metadata != "") {
+                  meta = " (" + data.transaction.metadata + ")";
+                }
+                if(data.event == "transaction") {
+                  log.log("✔ " + data.transaction.from + " ➜ " + data.transaction.value + "KST ➜ " + data.transaction.to + meta);
+                }
             }
             //log.log(message.utf8Data)
             screen.render()
         }
     });
+    connection.sendUTF(JSON.stringify({id: 1, type:'subscribe', event:'transactions'}));
     
     function sendNumber() {
         if (connection.connected) {

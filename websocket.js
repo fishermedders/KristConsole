@@ -29,6 +29,7 @@ client.on('connect', function(connection) {
             setTimeout(sendNumber, 1000);
         }
     }
+    connection.sendUTF(JSON.stringify({id: 1, type:'subscribe', event:'transactions'}))
     //sendNumber();
 });
 
