@@ -4,6 +4,10 @@ var blessed = require('blessed')
 var setTerminalTitle = require('set-terminal-title');
 setTerminalTitle('KRIST CONSOLE :D', { verbose: false });
 
+var open = require('open');
+
+var packageJson = require('./package.json');
+
 var WebSocketClient = require('websocket').client;
 const axios = require('axios')
 
@@ -18,14 +22,15 @@ var grid = new contrib.grid({rows: 12, cols: 12, screen: screen})
 var tree =  grid.set(0, 8, 6, 4, contrib.tree, 
   { fg: 'green'
   , selectedFg: 'green'
-  , label: 'Top [B]alances (R to reload)'
-  , template: {lines:false}
+  , label: 'Top {bold}{green-fg}B{/green-fg}{/bold}alances ({bold}{green-fg}R{/green-fg}{/bold} to reload)'
+  , template: {lines:true}
+  , tags: true
   }
 );
 
 tree.on('select',function(node){
-    if (node.myCustomProperty){
-        //log.log(node.myCustomProperty);
+    if (node.link){
+        open(node.link);
     }
     //log.log(node.name);
     //screen.render();
@@ -46,15 +51,16 @@ var twentyfourhWorkLine = grid.set(0, 4, 6, 4, contrib.line,
             , showLegend: false
             , legend: {width: 10}})
 
-var globalStats = grid.set(6, 0, 3, 6, blessed.box, {label: 'Krist [G]lobal Stats', tags:true})
-var latestStats = grid.set(9, 0, 3, 4, blessed.box, {label: 'Krist [L]atest Stats', tags:true})
+var globalStats = grid.set(6, 0, 3, 6, blessed.box, {label: 'Krist {bold}{green-fg}G{/green-fg}{/bold}lobal Stats', tags:true})
+var latestStats = grid.set(9, 0, 3, 4, blessed.box, {label: 'Krist {bold}{green-fg}L{/green-fg}{/bold}atest Stats', tags:true})
 var kristLogo = grid.set(9, 4, 3, 2, blessed.box, {tags:true, content:
     "{center}" + 
     "{white-bg}{green-fg}  //{/white-bg}{/green-fg}{green-fg}{#bfff00-bg}\\\\  {/#bfff00-bg}\n" +
     "{white-bg}{green-fg}//  {/white-bg}{/green-fg}{green-fg}{#bfff00-bg}  \\\\{/#bfff00-bg}\n" +
     "{green-fg}{#bfff00-bg}\\\\  {/green-fg}{/#bfff00-bg}{green-bg}{#bfff00-fg}  //{/green-bg}\n" +
     "{green-fg}{#bfff00-bg}  \\\\{/green-fg}{/#bfff00-bg}{green-bg}{#bfff00-fg}//  {/green-bg}\n" +
-    "KristConsole{/center}"
+    "KristConsole v" + packageJson.version + "\n" +
+    "by Fisher (@fishermedders){/center}"
 })
 
 var log = grid.set(6, 6, 6, 6, contrib.log, 
@@ -76,12 +82,13 @@ function generateTable() {
         , children: {}};
       var count = 1;
       response.data.addresses.forEach((address) => {
-          rich.children["#" + count + " " + address.address + " " + Number(address.balance).toLocaleString()] = { children:
+          rich.children["#" + count + (count < 10 ? " " : "") + " {bold}" + address.address + "{/bold} {green-fg}₭" + Number(address.balance).toLocaleString() + "{/green-fg}"] = { children:
             { 'Address': { name: "Address: " + address.address}
-            , 'Balance': { name: "Balance: " + Number(address.balance).toLocaleString()}
-            , 'TotalIn': { name: "Total In: " + Number(address.totalin).toLocaleString()}
-            , 'TotalOut': { name: "Total Out: " + Number(address.totalout).toLocaleString()}
+            , 'Balance': { name: "Balance: {green-fg}₭" + Number(address.balance).toLocaleString() + "{/green-fg}"}
+            , 'TotalIn': { name: "Total In: {green-fg}₭" + Number(address.totalin).toLocaleString() + "{/green-fg}"}
+            , 'TotalOut': { name: "Total Out: {green-fg}₭" + Number(address.totalout).toLocaleString() + "{/green-fg}"}
             , 'FirstSeen': { name: "First Seen: " + address.firstseen}
+            , 'Link': {name: " * Open in Krist.club", link: "https://krist.club/address/" + address.address}
           }};
           count++;
       });
