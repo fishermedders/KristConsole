@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var blessed = require('blessed')
   , contrib = require('blessed-contrib')
 
