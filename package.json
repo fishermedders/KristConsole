@@ -1,6 +1,6 @@
 {
-  "name": "kristconsole",
-  "version": "1.0.0",
+  "name": "@isherfay/kristconsole",
+  "version": "1.0.1",
   "description": "A cool Krist Console for monitoring all things Krist",
   "main": "Krist_Dashboard.js",
   "dependencies": {
@@ -31,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/fishermedders/KristConsole/issues"
   },
-  "homepage": "https://github.com/fishermedders/KristConsole#readme"
+  "homepage": "https://github.com/fishermedders/KristConsole#readme",
+  "bin": {
+    "kristconsole": "./Krist_Dashboard.js"
+  }
 }
