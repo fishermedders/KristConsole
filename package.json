@@ -1,6 +1,6 @@
 {
   "name": "@isherfay/kristconsole",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A cool Krist Console for monitoring all things Krist",
   "main": "Krist_Dashboard.js",
   "dependencies": {
