@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+//testing sumn
 var blessed = require('blessed')
   , contrib = require('blessed-contrib')
 
